@@ -9,7 +9,7 @@ import Timer from "./components/Timer/Timer";
 import ProductionTable from "./components/ProductionTable/ProductionTable";
 import MachineSelector from "./components/MachineSelector/MachineSelector";
 import OperatorSelector from "./components/OperatorSelector/OperatorSelector";
-import StopReasonSelector from "./components/StopReasonSelector/StopReasonSelector"; // Відновлено компонент
+import StopReasonSelector from "./components/StopReasonSelector/StopReasonSelector";
 
 function App() {
   const [shift, setShift] = useState("");
@@ -21,8 +21,10 @@ function App() {
   const [isRunning, setIsRunning] = useState(false);
   const [productionData, setProductionData] = useState([]);
   const [stopReason, setStopReason] = useState("");
+  const [startTime, setStartTime] = useState(null); // Додаємо стан для початкового часу
 
   const handleStart = () => {
+    setStartTime(new Date()); // Записуємо початковий час
     setIsRunning(true);
   };
 
@@ -38,7 +40,7 @@ function App() {
         task,
         color,
         operator,
-        startTime: new Date(),
+        startTime,
         endTime,
         quantity,
         stopReason,
@@ -47,17 +49,29 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <ShiftSelector onSelectShift={setShift} />
-      <MachineSelector onSelectMachine={setMachine} />
-      <ProductSelector onSelectProduct={setProduct} />
-      <TaskSelector onSelectTask={setTask} />
-      <ColorSelector onSelectColor={setColor} />
-      <OperatorSelector onSelectOperator={setOperator} />
-      <Timer isRunning={isRunning} onStart={handleStart} onStop={handleStop} />
-      {!isRunning && <StopReasonSelector onSelectReason={setStopReason} />}
-      <ProductionTable data={productionData} />
-    </div>
+    <>
+      <div className="app-container">
+        <div className="selectors-container">
+          <ShiftSelector onSelectShift={setShift} />
+          <MachineSelector onSelectMachine={setMachine} />
+          <ProductSelector onSelectProduct={setProduct} />
+          <TaskSelector onSelectTask={setTask} />
+          <ColorSelector onSelectColor={setColor} />
+          <OperatorSelector onSelectOperator={setOperator} />
+        </div>
+        <div className="timer-container">
+          <Timer
+            isRunning={isRunning}
+            onStart={handleStart}
+            onStop={handleStop}
+          />
+          {!isRunning && <StopReasonSelector onSelectReason={setStopReason} />}
+        </div>
+        <div className="production-table-container">
+          <ProductionTable data={productionData} />
+        </div>
+      </div>
+    </>
   );
 }
 

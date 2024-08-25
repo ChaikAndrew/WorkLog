@@ -1,54 +1,134 @@
+/* Загальні стилі додатку */
 .app-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
 }
 
+/* Контейнер для селекторів */
+.selectors-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Простір між селекторами */
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Селектори */
 .selector {
-  margin: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 200px; /* Ширина селектора */
+  box-sizing: border-box;
 }
 
 .selector h3 {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 .selector select {
-  padding: 5px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Таймер */
+.timer-container {
+  margin-bottom: 20px;
 }
 
 .timer {
-  margin: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
+
+.timer h3 {
+  margin-bottom: 15px;
+  color: #333;
 }
 
 .timer input {
   margin: 0 10px;
-  padding: 5px;
-  width: 100px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 120px;
+  box-sizing: border-box;
 }
 
-.production-table {
+.timer button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #007bff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.timer button:disabled {
+  background-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+.timer button:not(:disabled):hover {
+  background-color: #0056b3;
+}
+
+/* Таблиця виробництва */
+.production-table-container {
   margin-top: 20px;
   width: 100%;
   overflow-x: auto;
 }
 
-.production-table h3 {
+.production-table-container h3 {
   margin-bottom: 10px;
+  font-size: 1.5em;
+  color: #333;
 }
 
-.production-table table {
+.production-table-container table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.production-table th,
-.production-table td {
+.production-table-container th,
+.production-table-container td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 10px;
+  text-align: left;
+  font-size: 0.9em;
 }
 
-.production-table th {
-  background-color: #f4f4f4;
-  text-align: left;
+.production-table-container th {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
+.production-table-container td {
+  background-color: #fff;
+}
+
+.production-table-container tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.production-table-container tr:hover {
+  background-color: #f1f1f1;
 }
