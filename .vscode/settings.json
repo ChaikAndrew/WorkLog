@@ -1,0 +1,62 @@
+{
+  "liveServer.settings.port": 5504,
+
+  "workbench.iconTheme": "material-icon-theme",
+  "material-icon-theme.hidesExplorerArrows": true,
+  "workbench.tree.renderIndentGuides": "none",
+  "editor.minimap.enabled": false,
+  // "editor.guides.indentation":false,
+  "editor.renderWhitespace": "none",
+  "editor.renderLineHighlight": "none",
+  "editor.overviewRulerBorder": false,
+  "editor.scrollbar.verticalScrollbarSize": 10,
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.fontFamily": "JetBrains Mono",
+  "editor.fontLigatures": true,
+  // "editor.fontSize": 12,
+  "editor.lineHeight": 1.3,
+  // "breadcrumbs.enabled": false
+  "explorer.compactFolders": false,
+  "files.autoSave": "onFocusChange",
+  "terminal.integrated.tabs.enabled": false,
+  "editor.formatOnSave": true,
+
+  "apc.font.family": "JetBrains Mono",
+  "apc.menubar.compact": true,
+  "apc.activityBar": {
+    "size": 35
+  },
+  "apc.header": {
+    "height": 25
+  },
+  "apc.sidebar.titlebar": {
+    "height": 25
+  },
+  "apc.statusBar": {
+    "height": 25
+  },
+  "apc.listRow": {
+    "lists": [
+      "customview-tree",
+      "results",
+      "open-editors",
+      "explorer-folders-view",
+      "outline-tree",
+      "scm-view",
+      "debug-view-content",
+      "debug-breakpoints",
+      "tree"
+    ],
+    "height": 20
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[javascriptreact]": {
+     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+}
