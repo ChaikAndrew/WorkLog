@@ -4,13 +4,6 @@ import duration from "dayjs/plugin/duration";
 
 dayjs.extend(duration);
 
-const calculateDuration = (startTime, endTime) => {
-  if (!startTime || !endTime) return 0;
-  const start = dayjs(startTime);
-  const end = dayjs(endTime);
-  return end.diff(start, "second"); // Повертає тривалість у секундах
-};
-
 const formatDuration = (seconds) => {
   const durationObj = dayjs.duration(seconds, "seconds");
   const hours = durationObj.hours();
@@ -22,54 +15,41 @@ const formatDuration = (seconds) => {
 const ProductionTable = ({ data }) => {
   return (
     <div className="production-table-container">
-      <h3>Таблиця виробництва</h3>
+      <h3>Production Table</h3>
       <table>
         <thead>
           <tr>
-            <th>Зміна</th>
-            <th>Машина</th>
-            <th>Продукт</th>
-            <th>Завдання</th>
-            <th>Колір</th>
-            <th>Оператор</th>
-            <th>Час початку</th>
-            <th>Час закінчення</th>
-            <th>Кількість</th>
-            <th>Причина зупинки</th>
-            <th>Час роботи</th>
-            <th>Час простою</th>
+            <th>Shift</th>
+            <th>Machine</th>
+            <th>Operator</th>
+            <th>Product</th>
+            <th>Task</th>
+            <th>Color</th>
+            <th>Quantity</th>
+            <th>Stop Reason</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Working Time</th>
+            <th>Downtime</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((entry, index) => {
-            // Обчислюємо тривалість роботи
-            const workDuration = calculateDuration(
-              entry.startTime,
-              entry.endTime
-            );
-
-            // Обчислюємо тривалість простою
-            const downtimeDuration = entry.stopReason
-              ? calculateDuration(entry.endTime, new Date())
-              : 0;
-
-            return (
-              <tr key={index}>
-                <td>{entry.shift}</td>
-                <td>{entry.machine}</td>
-                <td>{entry.product}</td>
-                <td>{entry.task}</td>
-                <td>{entry.color}</td>
-                <td>{entry.operator}</td>
-                <td>{dayjs(entry.startTime).format("HH:mm:ss")}</td>
-                <td>{dayjs(entry.endTime).format("HH:mm:ss")}</td>
-                <td>{entry.quantity}</td>
-                <td>{entry.stopReason || "Немає"}</td>
-                <td>{formatDuration(workDuration)}</td>
-                <td>{formatDuration(downtimeDuration)}</td>
-              </tr>
-            );
-          })}
+          {data.map((entry, index) => (
+            <tr key={index}>
+              <td>{entry.shift}</td>
+              <td>{entry.machine}</td>
+              <td>{entry.operator}</td>
+              <td>{entry.product}</td>
+              <td>{entry.task}</td>
+              <td>{entry.color}</td>
+              <td>{entry.quantity}</td>
+              <td>{entry.stopReason || "Немає"}</td>
+              <td>{dayjs(entry.startTime).format("HH:mm:ss")}</td>
+              <td>{dayjs(entry.endTime).format("HH:mm:ss")}</td>
+              <td>{formatDuration(entry.workDuration)}</td>
+              <td>{formatDuration(entry.downtimeDuration)}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

@@ -5,9 +5,9 @@ const MachineSelector = ({ onSelectMachine }) => {
 
   return (
     <div className="selector">
-      <h3>Оберіть машину:</h3>
+      <h3>DTG №</h3>
       <select onChange={(e) => onSelectMachine(e.target.value)}>
-        <option value="">Оберіть машину</option>
+        <option value="">Select</option>
         {machines.map((machine, index) => (
           <option key={index} value={machine}>
             {machine}

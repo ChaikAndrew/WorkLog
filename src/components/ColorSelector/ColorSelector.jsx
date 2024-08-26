@@ -1,13 +1,13 @@
 import React from "react";
 
 const ColorSelector = ({ onSelectColor }) => {
-  const colors = ["Білий", "Кольоровий"];
+  const colors = ["White", "Color"];
 
   return (
     <div className="selector">
-      <h3>Оберіть колір:</h3>
+      <h3>Color</h3>
       <select onChange={(e) => onSelectColor(e.target.value)}>
-        <option value="">Оберіть колір</option>
+        <option value="">Select</option>
         {colors.map((color, index) => (
           <option key={index} value={color}>
             {color}

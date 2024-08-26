@@ -1,13 +1,13 @@
 import React from "react";
 
 const TaskSelector = ({ onSelectTask }) => {
-  const tasks = ["POD", "POF", "Zlecenie", "Inne", "Test"];
+  const tasks = ["POD", "POF", "ZLECENIE"];
 
   return (
     <div className="selector">
-      <h3>Оберіть завдання:</h3>
+      <h3>Order №</h3>
       <select onChange={(e) => onSelectTask(e.target.value)}>
-        <option value="">Оберіть завдання</option>
+        <option value="">Select</option>
         {tasks.map((task, index) => (
           <option key={index} value={task}>
             {task}
