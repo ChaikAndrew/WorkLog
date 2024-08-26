@@ -30,8 +30,11 @@ const stopReasons = [
 
 const StopReasonSelector = ({ onSelectReason }) => {
   return (
-    <select onChange={(e) => onSelectReason(parseInt(e.target.value, 10))}>
-      <option value="">Select the reason for the stop</option>
+    <select
+      className="selector"
+      onChange={(e) => onSelectReason(parseInt(e.target.value, 10))}
+    >
+      <option value="">Select</option>
       {stopReasons.map((reason) => (
         <option key={reason.id} value={reason.id}>
           {reason.id} - {reason.description}

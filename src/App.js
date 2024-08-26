@@ -132,10 +132,10 @@ const App = () => {
       <div className="selectors-container">
         <ShiftSelector onSelectShift={setShift} />
         <MachineSelector onSelectMachine={setMachine} />
+        <OperatorSelector onSelectOperator={setOperator} />
         <ProductSelector onSelectProduct={setProduct} />
         <TaskSelector onSelectTask={setTask} />
         <ColorSelector onSelectColor={setColor} />
-        <OperatorSelector onSelectOperator={setOperator} />
       </div>
       <div className="timer-container">
         <Timer

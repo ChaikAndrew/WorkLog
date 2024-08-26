@@ -15,7 +15,7 @@ const formatDuration = (seconds) => {
 const ProductionTable = ({ data }) => {
   return (
     <div className="production-table-container">
-      <h3>Production Table</h3>
+      <h3 className="production-table-title">Production Table</h3>
       <table>
         <thead>
           <tr>
@@ -23,8 +23,8 @@ const ProductionTable = ({ data }) => {
             <th>Machine</th>
             <th>Operator</th>
             <th>Product</th>
-            <th>Task</th>
             <th>Color</th>
+            <th>Task</th>
             <th>Quantity</th>
             <th>Stop Reason</th>
             <th>Start Time</th>
@@ -40,10 +40,10 @@ const ProductionTable = ({ data }) => {
               <td>{entry.machine}</td>
               <td>{entry.operator}</td>
               <td>{entry.product}</td>
-              <td>{entry.task}</td>
               <td>{entry.color}</td>
+              <td>{entry.task}</td>
               <td>{entry.quantity}</td>
-              <td>{entry.stopReason || "Немає"}</td>
+              <td>{entry.stopReason || ""}</td>
               <td>{dayjs(entry.startTime).format("HH:mm:ss")}</td>
               <td>{dayjs(entry.endTime).format("HH:mm:ss")}</td>
               <td>{formatDuration(entry.workDuration)}</td>
