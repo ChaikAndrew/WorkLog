@@ -5,13 +5,22 @@ import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
 const formatDuration = (seconds) => {
+  // Створюємо об'єкт тривалості з секунд
   const durationObj = dayjs.duration(seconds, "seconds");
+
+  // Отримуємо години, хвилини та секунди
   const hours = durationObj.hours();
   const minutes = durationObj.minutes();
   const secs = durationObj.seconds();
-  return `${hours} год ${minutes} хв ${secs} с`;
-};
 
+  // Форматуємо кожну частину часу, додаючи ведучі нулі при необхідності
+  const formattedHours = hours.toString().padStart(2, "0");
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+  const formattedSecs = secs.toString().padStart(2, "0");
+
+  // Повертаємо форматований рядок у вигляді HH:MM:SS
+  return `${formattedHours}:${formattedMinutes}:${formattedSecs}`;
+};
 const ProductionTable = ({ data }) => {
   return (
     <div className="production-table-container">

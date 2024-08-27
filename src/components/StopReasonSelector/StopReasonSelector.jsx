@@ -31,7 +31,7 @@ const stopReasons = [
 const StopReasonSelector = ({ onSelectReason }) => {
   return (
     <select
-      className="selector"
+      className={`StopReasonSelector selector`}
       onChange={(e) => onSelectReason(parseInt(e.target.value, 10))}
     >
       <option value="">Select</option>
