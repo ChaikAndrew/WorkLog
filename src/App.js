@@ -73,7 +73,7 @@ const App = () => {
         // Якщо час початку більше, ніж запланований час зміни
         const downtime = calculateDowntime(shiftStartTime, value);
         updatedTable[index].downtime = downtime; // Записуємо час простою
-        updatedTable[index].stopReason = "Затримка початку зміни"; // Причина простою
+        updatedTable[index].stopReason = "Select Stop Reason"; // Причина простою
       } else {
         // Якщо час в порядку, обнуляємо downtime та stopReason
         updatedTable[index].downtime = "0h 0m";
