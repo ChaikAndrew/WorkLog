@@ -1,0 +1,59 @@
+/* ShiftStatisticsTable.module.css */
+
+td {
+  text-align: center;
+}
+
+.shiftTotals {
+  border-radius: 8px;
+
+  width: 100%;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.shiftSummary {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.shiftSummary p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.shiftTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.shiftTable thead th {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 2px solid #444;
+}
+
+.shiftTable tbody td {
+  padding: 12px 15px;
+  border-top: 1px solid #ddd;
+  background-color: #ffffff;
+  transition: background-color 0.3s;
+}
+
+.shiftTable tbody tr:nth-of-type(even) {
+  background-color: #f9f9f9;
+}
+
+.shiftTable tbody tr:hover {
+  background-color: #eaeaea;
+}
+
+.shiftTable tfoot td {
+  text-align: center;
+  font-weight: bold;
+
+  padding: 12px 15px;
+}

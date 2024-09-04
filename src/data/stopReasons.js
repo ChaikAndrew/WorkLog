@@ -1,0 +1,28 @@
+const stopReasons = [
+  { id: 1, description: "Przezbrojenie (zmiana palety)" },
+  { id: 2, description: "Czyszczenie gfowic (Planowane 2/zm)" },
+  { id: 3, description: "Kalibracja palety (problem z wysokoscia)" },
+  { id: 4, description: "Czyszczenie палет з farby" },
+  { id: 5, description: "Przerwa pracownичча" },
+  { id: 6, description: "Brak peinej obsady" },
+  { id: 7, description: "Brak plikow" },
+  { id: 8, description: "Brak farб/spray'u" },
+  { id: 9, description: "Brak towarу produkcyjного" },
+  { id: 10, description: "Testy технологичні" },
+  { id: 11, description: "Problem z czujnikiem вискості gfowicy" },
+  { id: 12, description: "Czyszczenie Gtowic (Paskowanie glowic)" },
+  { id: 13, description: "Ударення в gtowice" },
+  { id: 14, description: "Awaria pieca" },
+  { id: 15, description: "Bledy системowe (system POD)" },
+  { id: 16, description: "Konserwacja pieca tygodniowa/miesieczna" },
+  { id: 17, description: "Konserwacja Kornit tygodniowa/miesieczna" },
+  { id: 18, description: "Awaria dysків sieciowych/pradu" },
+  { id: 19, description: "Segregacja towarу" },
+  { id: 20, description: "Завешенне машини (restart)" },
+  { id: 21, description: "Maszyna wyłączona з pracy (awaria opisana mailowo)" },
+  { id: 22, description: "Operatywka" },
+  { id: 23, description: "Залевання palety sprayem" },
+  { id: 24, description: "Prezbrojenie (zmiana temperaturи pieca)" },
+];
+
+export default stopReasons;
