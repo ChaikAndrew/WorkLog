@@ -54,5 +54,33 @@ td {
 .shiftTable tfoot td {
   text-align: center;
 
-  padding: 12px 15px;
+  padding: 5px 15px;
+}
+
+.totalPod {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #ff7381;
+}
+
+.totalPof {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #28a745;
+}
+
+.totalZlecenie {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #ffc107;
+}
+
+.totals {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #17a2b8;
 }

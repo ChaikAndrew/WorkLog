@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./ShiftStatisticsTable.module.scss";
+import s from "./ShiftStatisticsTable.module.scss";
 
 const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
   if (Object.values(shiftTotals).every((value) => value === 0)) {
@@ -10,10 +10,10 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
     shiftTotals.totalPOD + shiftTotals.totalPOF + shiftTotals.totalZlecenie;
 
   return (
-    <div className={styles.shiftTotals}>
+    <div className={s.shiftTotals}>
       <h2>Statistics for {shiftName}</h2>
 
-      <table className={styles.shiftTable}>
+      <table className={s.shiftTable}>
         <thead>
           <tr>
             <th>Machine</th>
@@ -68,10 +68,10 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
             <td colSpan="2">
               <strong>Total Produced (Shift)</strong>
             </td>
-            <td>{totalProduced}</td>
-            <td>{shiftTotals.totalPOD}</td>
-            <td>{shiftTotals.totalPOF}</td>
-            <td>{shiftTotals.totalZlecenie}</td>
+            <td className={s.totals}>{totalProduced}</td>
+            <td className={s.totalPod}>{shiftTotals.totalPOD}</td>
+            <td className={s.totalPof}>{shiftTotals.totalPOF}</td>
+            <td className={s.totalZlecenie}>{shiftTotals.totalZlecenie}</td>
             <td>{shiftTotals.totalTShirts}</td>
             <td>{shiftTotals.totalHoodies}</td>
             <td>{shiftTotals.totalBags}</td>
