@@ -16,6 +16,10 @@ const App = () => {
   const [shift, setShift] = useState("");
   const [selectedMachine, setSelectedMachine] = useState("");
   const [selectedShiftIndex, setSelectedShiftIndex] = useState(0);
+  const [showZlecenieModal, setShowZlecenieModal] = useState(false); // Модальне вікно
+  const [zlecenieNameInput, setZlecenieNameInput] = useState(""); // Введена назва для ZLECENIE
+  const [zlecenieIndex, setZlecenieIndex] = useState(null); // Індекс рядка, де треба зберегти назву
+
   const [tables, setTables] = useState(() => {
     const savedTables = localStorage.getItem("tables");
     if (savedTables) {
@@ -59,11 +63,39 @@ const App = () => {
     setSelectedDate(event.target.value);
   };
 
+  const formatTimeTo24Hour = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+
+    // Форматуємо години та хвилини, щоб завжди були двозначними
+    const formattedHours = String(hours).padStart(2, "0");
+    const formattedMinutes = String(minutes).padStart(2, "0");
+
+    return `${formattedHours}:${formattedMinutes}`;
+  };
+  const handleZlecenieSave = () => {
+    const updatedTable = [...tables[operator]];
+    updatedTable[zlecenieIndex].zlecenieName = zlecenieNameInput; // Зберігаємо введену назву
+    setTables({ ...tables, [operator]: updatedTable });
+    setShowZlecenieModal(false); // Закриваємо модальне вікно
+    setZlecenieNameInput(""); // Очищаємо поле введення
+  };
   // Функція для обробки змін введення
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
     const updatedTable = [...tables[operator]];
     updatedTable[index][name] = value;
+
+    if (name === "task" && value === "ZLECENIE") {
+      setShowZlecenieModal(true); // Відкриваємо модальне вікно
+      setZlecenieIndex(index); // Записуємо індекс для збереження назви
+    } else {
+      updatedTable[index][name] = value; // Зберігаємо інші зміни
+      setTables({ ...tables, [operator]: updatedTable });
+    }
+
+    setTables({ ...tables, [operator]: updatedTable });
+
+    setTables({ ...tables, [operator]: updatedTable });
 
     // Перевірка на запізнення початку зміни
     if (name === "startTime") {
@@ -73,7 +105,7 @@ const App = () => {
         // Якщо час початку більше, ніж запланований час зміни
         const downtime = calculateDowntime(shiftStartTime, value);
         updatedTable[index].downtime = downtime; // Записуємо час простою
-        updatedTable[index].stopReason = "Select Stop Reason"; // Причина простою
+        updatedTable[index].stopReason = ""; // Причина простою
       } else {
         // Якщо час в порядку, обнуляємо downtime та stopReason
         updatedTable[index].downtime = "0h 0m";
@@ -82,12 +114,20 @@ const App = () => {
     }
 
     if (name === "startTime" || name === "endTime") {
+      // Форматуємо час перед збереженням
+      const formattedTime = formatTimeTo24Hour(value);
+      updatedTable[index][name] = formattedTime;
+
       const startTime = updatedTable[index].startTime;
       const endTime = updatedTable[index].endTime;
+
+      // Якщо обидва часу встановлені, обчислюємо робочий час
       if (startTime && endTime) {
         const workingTime = calculateWorkingTime(startTime, endTime);
         updatedTable[index].workingTime = workingTime;
       }
+    } else {
+      updatedTable[index][name] = value;
     }
 
     if (name === "endTime" && index < updatedTable.length - 1) {
@@ -476,6 +516,20 @@ const App = () => {
           </select>
         </ul>
       </li>
+      {showZlecenieModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Enter Zlecenie Name</h2>
+            <input
+              type="text"
+              value={zlecenieNameInput}
+              onChange={(e) => setZlecenieNameInput(e.target.value)}
+            />
+            <button onClick={handleZlecenieSave}>OK</button>
+            <button onClick={() => setShowZlecenieModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
 
       {operator && shift && selectedMachine && (
         <div className="table">
@@ -515,7 +569,9 @@ const App = () => {
                       <td>{row.color}</td>
                       <td>
                         <span className={`status ${row.task.toLowerCase()}`}>
-                          {row.task}
+                          {row.task === "ZLECENIE"
+                            ? row.zlecenieName || "ZLECENIE"
+                            : row.task}
                         </span>
                       </td>
                       <td>{row.quantity}</td>
