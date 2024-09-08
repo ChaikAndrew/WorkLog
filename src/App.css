@@ -1,9 +1,9 @@
 /* Загальні стилі */
 body {
+  padding-bottom: 25px;
   font-family: "Chakra Petch", sans-serif;
   color: #23272e;
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
@@ -41,32 +41,25 @@ table {
   width: 100%;
   border-collapse: collapse;
   background-color: #f0f0f0;
-  border-radius: 10px;
+  border-radius: 5px;
   overflow: hidden;
 }
 
 thead th {
   padding: 5px 10px;
   text-align: left;
-  border-bottom: 1px solid #444;
+  /* border-bottom: 1px solid #444; */
 }
 
 tbody td {
   border-top: 1px solid #ddd;
+}
+tbody tr:not(:last-child) {
   background-color: #ffffff;
-  transition: background-color 0.3s;
-}
-
-tbody tr:nth-of-type(even) {
-  background-color: #f9f9f9;
-}
-
-tbody tr:hover {
-  background-color: #eaeaea;
 }
 
 button {
-  background-color: #007bff;
+  background-color: #33372c;
   border: none;
   color: #fff;
   padding: 8px 12px;
@@ -78,11 +71,6 @@ button {
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-button:hover,
-button:focus {
-  cursor: pointer;
-}
-
 /* button.edit {
   background-color: #28a745;
 } */
@@ -91,29 +79,24 @@ button:focus {
   background-color: #dc3545;
 } */
 
-button.save {
-  background-color: #17a2b8;
-}
-
 .status {
   padding: 4px 8px;
   border-radius: 4px;
   color: #fff;
 
   display: inline-block;
-  margin-right: 5px;
 }
 
 .status.pod {
-  background-color: #ff7381;
+  background-color: #557c56;
 }
 
 .status.pof {
-  background-color: #28a745;
+  background-color: #3a543b;
 }
 
 .status.zlecenie {
-  background-color: #ffc107;
+  background-color: #33372c;
 }
 
 .total-pod,
@@ -125,23 +108,31 @@ button.save {
   color: #fff;
 
   display: inline-block;
-  margin: 5px;
+  margin: 2px;
 }
 
 .total-pod {
-  background-color: #ff7381;
+  background-color: #557c56;
 }
 
 .total-pof {
-  background-color: #28a745;
+  background-color: #3a543b;
 }
 
 .total-zlecenie {
-  background-color: #ffc107;
+  background-color: #33372c;
 }
 
 .totals {
-  background-color: #17a2b8;
+  background-color: #ff885b;
+}
+
+.total-operator-statistic {
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin: 2px;
+  color: #000000;
+  background-color: #dadada;
 }
 
 select,
@@ -162,28 +153,28 @@ input[type="time"] {
   margin-bottom: 20px;
 }
 
-.shift-totals {
+/* .shift-totals {
   border-radius: 8px;
 
   width: 30%;
   text-align: center;
-}
+} */
 
-.shift-totals h2 {
+/* .shift-totals h2 {
   margin-bottom: 15px;
   font-size: 20px;
   color: #23272e;
-}
+} */
 
-.shift-totals p {
+/* .shift-totals p {
   margin: 8px 0;
   font-size: 16px;
-}
+} */
 
-.shift-all_totals {
+/* .shift-all_totals {
   display: flex;
   flex-direction: column;
-}
+} */
 
 .shift-buttons {
   margin-bottom: 20px;
@@ -202,12 +193,12 @@ input[type="time"] {
 }
 
 .shift-buttons button.active {
-  background-color: #007bff;
+  background-color: #33372c;
   color: #fff;
 }
 
 .table {
-  width: 97%;
+  width: 98%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -215,7 +206,7 @@ input[type="time"] {
 }
 
 .date-shift-info {
-  width: 90%;
+  width: 98%;
 }
 
 .modal {
@@ -247,7 +238,7 @@ input[type="time"] {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  color: black;
+  color: #ff885b;
   width: 120px;
   height: 80px;
   background-color: transparent;
@@ -267,11 +258,11 @@ input[type="time"] {
 .add-row:hover,
 .add-row:focus {
   cursor: pointer;
-  transform: scale(1.2); /* Збільшення при ховері */
+  transform: scale(1.6); /* Збільшення при ховері */
 }
 
 .add-row:active {
-  transform: scale(0.9); /* Зменшення при натисканні */
+  transform: scale(1); /* Зменшення при натисканні */
 }
 
 /* Повернення до початкового розміру після натискання */
@@ -314,17 +305,52 @@ input[type="time"] {
 .edit-btn-save:not(:hover):not(:active) {
   transform: scale(1);
 }
+.edit-btn-save {
+  color: #557c56;
+}
 
 .edit-icon {
-  color: #ffc107; /* колір іконки */
+  color: #557c56; /* колір іконки */
   background-color: transparent; /* фон іконки або елементу */
   transition: transform 0.3s ease;
   transform: scale(1); /* Початковий стан */
 }
 
 .delete-icon {
-  color: #bb4040; /* колір іконки */
+  color: #ff885b; /* колір іконки */
   background-color: transparent; /* фон іконки або елементу */
   transition: transform 0.3s ease;
   transform: scale(1); /* Початковий стан */
+}
+
+.custom-gradient-success {
+  text-align: center;
+
+  background: #00b4db; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #005672,
+    #005672
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #005672,
+    #005672
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.custom-gradient-error {
+  text-align: center;
+
+  background: #ff1e00; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #962a2a,
+    #962a2a
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #962a2a,
+    #962a2a
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }

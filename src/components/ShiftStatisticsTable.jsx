@@ -42,15 +42,15 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
                   <td>
                     {stats.totalPOD + stats.totalPOF + stats.totalZlecenie}
                   </td>
-                  <td>{stats.totalPOD}</td>
-                  <td>{stats.totalPOF}</td>
-                  <td>{stats.totalZlecenie}</td>
-                  <td>{stats.totalTShirts}</td>
-                  <td>{stats.totalHoodies}</td>
-                  <td>{stats.totalBags}</td>
-                  <td>{stats.totalSleeves}</td>
-                  <td>{stats.totalOthers}</td>
-                  <td>{stats.totalTest}</td>
+                  <td>{stats.totalPOD > 0 && stats.totalPOD}</td>
+                  <td>{stats.totalPOF > 0 && stats.totalPOF}</td>
+                  <td>{stats.totalZlecenie > 0 && stats.totalZlecenie}</td>
+                  <td>{stats.totalTShirts > 0 && stats.totalTShirts}</td>
+                  <td>{stats.totalHoodies > 0 && stats.totalHoodies}</td>
+                  <td>{stats.totalBags > 0 && stats.totalBags}</td>
+                  <td>{stats.totalSleeves > 0 && stats.totalSleeves}</td>
+                  <td>{stats.totalOthers > 0 && stats.totalOthers}</td>
+                  <td>{stats.totalTest > 0 && stats.totalTest}</td>
                   <td>
                     {Math.floor(stats.totalWorkingTime / 60)}h{" "}
                     {stats.totalWorkingTime % 60}m
@@ -72,12 +72,13 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
             <td className={s.totalPod}>{shiftTotals.totalPOD}</td>
             <td className={s.totalPof}>{shiftTotals.totalPOF}</td>
             <td className={s.totalZlecenie}>{shiftTotals.totalZlecenie}</td>
-            <td>{shiftTotals.totalTShirts}</td>
-            <td>{shiftTotals.totalHoodies}</td>
-            <td>{shiftTotals.totalBags}</td>
-            <td>{shiftTotals.totalSleeves}</td>
-            <td>{shiftTotals.totalOthers}</td>
-            <td>{shiftTotals.totalTest}</td>
+
+            <td>{shiftTotals.totalTShirts > 0 && shiftTotals.totalTShirts}</td>
+            <td>{shiftTotals.totalHoodies > 0 && shiftTotals.totalHoodies}</td>
+            <td>{shiftTotals.totalBags > 0 && shiftTotals.totalBags}</td>
+            <td>{shiftTotals.totalSleeves > 0 && shiftTotals.totalSleeves}</td>
+            <td>{shiftTotals.totalOthers > 0 && shiftTotals.totalOthers}</td>
+            <td>{shiftTotals.totalTest > 0 && shiftTotals.totalTest}</td>
           </tr>
         </tfoot>
       </table>

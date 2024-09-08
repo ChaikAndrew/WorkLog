@@ -10,11 +10,14 @@ import tasks from "./data/tasks";
 import stopReasons from "./data/stopReasons";
 import ShiftStatisticsTable from "./components/ShiftStatisticsTable";
 
-import { FcPlus, FcApproval } from "react-icons/fc";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin2Line } from "react-icons/ri";
+import { IoMdCheckboxOutline } from "react-icons/io";
+import { IoMdAddCircle } from "react-icons/io";
 
 import Swal from "sweetalert2";
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 
 const App = () => {
   const [operator, setOperator] = useState("");
@@ -26,6 +29,12 @@ const App = () => {
   const [zlecenieIndex, setZlecenieIndex] = useState(null);
 
   const lastRowRef = useRef(null);
+  const notyf = new Notyf({
+    position: {
+      x: "right",
+      y: "top",
+    },
+  });
 
   const [tables, setTables] = useState(() => {
     const savedTables = localStorage.getItem("tables");
@@ -48,18 +57,19 @@ const App = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteRow(index); // Deleting the row
-        Swal.fire({
-          title: "Deleted!",
-          text: "The row has been successfully deleted.",
+        deleteRow(index); // Видаляємо рядок
 
-          showConfirmButton: false, // Hides the confirm button
-          timer: 2000, // Automatically closes after 2 seconds
+        // Показуємо повідомлення через Notyf про успішне видалення
+        notyf.open({
+          message: "The row has been successfully deleted.",
+          duration: 2000,
+          className: "custom-gradient-success",
         });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire({
-          title: "The row was not deleted.",
-          showConfirmButton: false, // Hides the confirm button
-          timer: 2000, // Automatically closes after 2 seconds
+        notyf.open({
+          message: "The row has been successfully deleted.",
+          duration: 2000,
+          className: "custom-gradient-success",
         });
       }
     });
@@ -233,9 +243,10 @@ const App = () => {
 
   const addRow = () => {
     if (!selectedDate) {
-      Swal.fire({
-        title: "Please select a date before adding a row.",
-        showConfirmButton: "OK",
+      notyf.open({
+        message: "Please select a date before adding a row.",
+        duration: 2000, // Тривалість 2 секунди (2000 мс)
+        className: "custom-gradient-error",
       });
       return;
     }
@@ -265,6 +276,14 @@ const App = () => {
     ];
     setTables({ ...tables, [operator]: updatedTable });
 
+    // Показуємо повідомлення про успішне додавання
+
+    notyf.open({
+      message: "Row has been successfully added to the table.",
+      duration: 2000,
+      className: "custom-gradient-success",
+    });
+
     // Прокручуємо до низу після додавання нового рядка
     setTimeout(() => {
       lastRowRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -286,6 +305,13 @@ const App = () => {
     const updatedTable = [...tables[operator]];
     updatedTable[index].isSaved = true;
     setTables({ ...tables, [operator]: updatedTable });
+
+    // Показуємо повідомлення про успішне редагування
+    notyf.open({
+      message: "Row has been successfully updated.",
+      duration: 2000,
+      className: "custom-gradient-success",
+    });
   };
 
   const calculateTotalsForData = (data, selectedDate) => {
@@ -490,7 +516,7 @@ const App = () => {
 
   return (
     <div className="table-container">
-      <h1>Work Log</h1>
+      <h1>Production Report</h1>
 
       <div className="date-container">
         <label>Select Date: </label>
@@ -630,7 +656,7 @@ const App = () => {
                             className="edit"
                             onClick={() => editRow(index)}
                           >
-                            <FiEdit className="edit-icon" size="22" />
+                            <FiEdit className="edit-icon" size="23" />
                           </button>
                           <button
                             className="delete"
@@ -746,7 +772,7 @@ const App = () => {
                             className="edit-btn-save"
                             onClick={() => saveRow(index)}
                           >
-                            <FcApproval size="30" />
+                            <IoMdCheckboxOutline size="25" />
                           </button>
                           <button
                             className="edit-btn-delete"
@@ -783,7 +809,7 @@ const App = () => {
                 <td>{operatorTotals.totalDowntime}</td>
                 <td></td>
               </tr>
-              <tr>
+              <tr className="total-statistics">
                 <td colSpan="5">
                   <span className="total-pod">
                     POD: {operatorTotals.totalPOD}
@@ -796,22 +822,56 @@ const App = () => {
                   </span>
                 </td>
                 <td colSpan="6">
-                  T-shirts: {operatorTotals.totalTShirts}, Hoodie:{" "}
-                  {operatorTotals.totalHoodies}, Bags:{" "}
-                  {operatorTotals.totalBags}, Sleeves:{" "}
-                  {operatorTotals.totalSleeves}, Others:{" "}
-                  {operatorTotals.totalOthers}, Test: {operatorTotals.totalTest}
+                  {operatorTotals.totalTShirts > 0 && (
+                    <span className="total-operator-statistic">
+                      T-shirts: {operatorTotals.totalTShirts}
+                    </span>
+                  )}
+                  {operatorTotals.totalHoodies > 0 && (
+                    <span className="total-operator-statistic">
+                      {" "}
+                      Hoodie: {operatorTotals.totalHoodies}
+                    </span>
+                  )}
+                  {operatorTotals.totalBags > 0 && (
+                    <span className="total-operator-statistic">
+                      Bags: {operatorTotals.totalBags}
+                    </span>
+                  )}
+                  {operatorTotals.totalSleeves > 0 && (
+                    <span className="total-operator-statistic">
+                      Sleeves: {operatorTotals.totalSleeves}
+                    </span>
+                  )}
+                  {operatorTotals.totalOthers > 0 && (
+                    <span className="total-operator-statistic">
+                      Others: {operatorTotals.totalOthers}
+                    </span>
+                  )}
+                  {operatorTotals.totalTest > 0 && (
+                    <span className="total-operator-statistic">
+                      Test: {operatorTotals.totalTest}
+                    </span>
+                  )}
                 </td>
                 <td colSpan="3">
-                  White: {operatorTotals.totalWhite}, Color:{" "}
-                  {operatorTotals.totalColor}
+                  {operatorTotals.totalWhite > 0 && (
+                    <span className="total-operator-statistic">
+                      White: {operatorTotals.totalWhite}
+                    </span>
+                  )}
+                  {operatorTotals.totalColor > 0 && (
+                    <span className="total-operator-statistic">
+                      Color: {operatorTotals.totalColor}
+                    </span>
+                  )}
                 </td>
               </tr>
             </tbody>
           </table>
 
           <button className="add-row" onClick={addRow}>
-            <FcPlus size={35} />
+            <IoMdAddCircle size={40} />
           </button>
         </div>
       )}
