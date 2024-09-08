@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 import shifts from "./data/shifts";
@@ -11,14 +10,22 @@ import tasks from "./data/tasks";
 import stopReasons from "./data/stopReasons";
 import ShiftStatisticsTable from "./components/ShiftStatisticsTable";
 
+import { FcPlus, FcApproval } from "react-icons/fc";
+import { FiEdit } from "react-icons/fi";
+import { RiDeleteBin2Line } from "react-icons/ri";
+
+import Swal from "sweetalert2";
+
 const App = () => {
   const [operator, setOperator] = useState("");
   const [shift, setShift] = useState("");
   const [selectedMachine, setSelectedMachine] = useState("");
   const [selectedShiftIndex, setSelectedShiftIndex] = useState(0);
-  const [showZlecenieModal, setShowZlecenieModal] = useState(false); // Модальне вікно
-  const [zlecenieNameInput, setZlecenieNameInput] = useState(""); // Введена назва для ZLECENIE
-  const [zlecenieIndex, setZlecenieIndex] = useState(null); // Індекс рядка, де треба зберегти назву
+  const [showZlecenieModal, setShowZlecenieModal] = useState(false);
+  const [zlecenieNameInput, setZlecenieNameInput] = useState("");
+  const [zlecenieIndex, setZlecenieIndex] = useState(null);
+
+  const lastRowRef = useRef(null);
 
   const [tables, setTables] = useState(() => {
     const savedTables = localStorage.getItem("tables");
@@ -31,6 +38,32 @@ const App = () => {
       }, {});
     }
   });
+
+  const handleDelete = (index) => {
+    Swal.fire({
+      title: "Are you sure?",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteRow(index); // Deleting the row
+        Swal.fire({
+          title: "Deleted!",
+          text: "The row has been successfully deleted.",
+
+          showConfirmButton: false, // Hides the confirm button
+          timer: 2000, // Automatically closes after 2 seconds
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: "The row was not deleted.",
+          showConfirmButton: false, // Hides the confirm button
+          timer: 2000, // Automatically closes after 2 seconds
+        });
+      }
+    });
+  };
 
   const [selectedDate, setSelectedDate] = useState("");
   const [showShiftStats, setShowShiftStats] = useState(false);
@@ -200,7 +233,10 @@ const App = () => {
 
   const addRow = () => {
     if (!selectedDate) {
-      alert("Please select a date before adding a row.");
+      Swal.fire({
+        title: "Please select a date before adding a row.",
+        showConfirmButton: "OK",
+      });
       return;
     }
 
@@ -228,6 +264,11 @@ const App = () => {
       },
     ];
     setTables({ ...tables, [operator]: updatedTable });
+
+    // Прокручуємо до низу після додавання нового рядка
+    setTimeout(() => {
+      lastRowRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const deleteRow = (index) => {
@@ -360,7 +401,7 @@ const App = () => {
             totalTest: 0,
             totalWorkingTime: 0,
             totalDowntime: 0,
-            operator: op, // Зберігаємо оператора, що працював на цій машині
+            operator: op,
           };
         }
 
@@ -457,7 +498,7 @@ const App = () => {
       </div>
 
       <button onClick={toggleShiftStatsVisibility}>
-        {showShiftStats ? "Hide" : "Show"} Shift Statistics Info by Date
+        {showShiftStats ? "Hide" : "Show"} Statistics
       </button>
 
       {showShiftStats && (
@@ -558,7 +599,10 @@ const App = () => {
             </thead>
             <tbody>
               {filteredTable.map((row, index) => (
-                <tr key={index}>
+                <tr
+                  key={index}
+                  ref={index === filteredTable.length - 1 ? lastRowRef : null}
+                >
                   {row.isSaved ? (
                     <>
                       <td>{formatDate(row.date)}</td>
@@ -586,21 +630,16 @@ const App = () => {
                             className="edit"
                             onClick={() => editRow(index)}
                           >
-                            Edit
+                            <FiEdit className="edit-icon" size="22" />
                           </button>
                           <button
                             className="delete"
-                            onClick={() => {
-                              if (
-                                window.confirm(
-                                  "Ви впевнені, що хочете видалити цей рядок?"
-                                )
-                              ) {
-                                deleteRow(index);
-                              }
-                            }}
+                            onClick={() => handleDelete(index)}
                           >
-                            Delete
+                            <RiDeleteBin2Line
+                              className="delete-icon"
+                              size="26"
+                            />
                           </button>
                           {!row.isSaved && (
                             <button
@@ -703,9 +742,20 @@ const App = () => {
                       <td>{row.downtime}</td>
                       <td>
                         <div className="edit-btns">
-                          <button onClick={() => saveRow(index)}>Save</button>
-                          <button onClick={() => deleteRow(index)}>
-                            Delete
+                          <button
+                            className="edit-btn-save"
+                            onClick={() => saveRow(index)}
+                          >
+                            <FcApproval size="30" />
+                          </button>
+                          <button
+                            className="edit-btn-delete"
+                            onClick={() => deleteRow(index)}
+                          >
+                            <RiDeleteBin2Line
+                              className="delete-icon"
+                              size="26"
+                            />
                           </button>
                         </div>
                       </td>
@@ -759,8 +809,9 @@ const App = () => {
               </tr>
             </tbody>
           </table>
+
           <button className="add-row" onClick={addRow}>
-            Add Row
+            <FcPlus size={35} />
           </button>
         </div>
       )}

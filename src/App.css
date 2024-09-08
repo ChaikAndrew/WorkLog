@@ -83,25 +83,16 @@ button:focus {
   cursor: pointer;
 }
 
-button.edit {
+/* button.edit {
   background-color: #28a745;
-}
+} */
 
-button.delete {
+/* button.delete {
   background-color: #dc3545;
-}
+} */
 
 button.save {
   background-color: #17a2b8;
-}
-
-button.add-row {
-  background-color: #ffc107;
-  margin-top: 20px;
-}
-
-button:hover {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .status {
@@ -249,4 +240,91 @@ input[type="time"] {
 
 .modal-content input {
   margin: 10px 0;
+}
+
+.add-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  width: 120px;
+  height: 80px;
+  background-color: transparent;
+  margin-top: 20px;
+
+  /* Додаємо фіксовану позицію */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+
+  /* Плавність переходу */
+  transition: transform 0.3s ease;
+  transform: scale(1); /* Початковий стан */
+}
+
+.add-row:hover,
+.add-row:focus {
+  cursor: pointer;
+  transform: scale(1.2); /* Збільшення при ховері */
+}
+
+.add-row:active {
+  transform: scale(0.9); /* Зменшення при натисканні */
+}
+
+/* Повернення до початкового розміру після натискання */
+.add-row:not(:hover):not(:active) {
+  transform: scale(1);
+}
+
+.edit-btns {
+  display: flex;
+}
+
+.edit-btn-save,
+.edit-btn-delete,
+.edit,
+.delete {
+  background-color: transparent;
+
+  transition: transform 0.3s ease;
+  transform: scale(1); /* Початковий стан */
+}
+.edit-btn-delete:hover,
+.edit-btn-delete:focus,
+.edit-btn-save:hover,
+.edit-btn-save:focus,
+.edit-icon:hover,
+.edit-icon:focus,
+.delete-icon:hover,
+.delete-icon:focus {
+  cursor: pointer;
+  transform: scale(1.3); /* Збільшення при ховері */
+}
+
+.edit-btn-delete,
+.edit-btn-save:active {
+  transform: scale(0.9); /* Зменшення при натисканні */
+}
+
+/* Повернення до початкового розміру після натискання */
+.edit-btn-delete,
+.edit-btn-save:not(:hover):not(:active) {
+  transform: scale(1);
+}
+
+.edit-icon {
+  color: #ffc107; /* колір іконки */
+  background-color: transparent; /* фон іконки або елементу */
+  transition: transform 0.3s ease;
+  transform: scale(1); /* Початковий стан */
+}
+
+.delete-icon {
+  color: #bb4040; /* колір іконки */
+  background-color: transparent; /* фон іконки або елементу */
+  transition: transform 0.3s ease;
+  transform: scale(1); /* Початковий стан */
 }
