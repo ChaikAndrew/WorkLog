@@ -43,6 +43,10 @@ table {
   background-color: #f0f0f0;
   border-radius: 5px;
   overflow: hidden;
+
+  -webkit-box-shadow: 7px 7px 18px -5px rgba(66, 68, 90, 1);
+  -moz-box-shadow: 7px 7px 18px -5px rgba(66, 68, 90, 1);
+  box-shadow: 7px 7px 18px -5px rgba(66, 68, 90, 1);
 }
 
 thead th {
@@ -206,7 +210,11 @@ input[type="time"] {
 }
 
 .date-shift-info {
+  margin: 20px;
+  padding: 5px;
   width: 98%;
+
+  border-radius: 15px;
 }
 
 .modal {
@@ -353,4 +361,8 @@ input[type="time"] {
     #962a2a,
     #962a2a
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.select-data-label {
+  margin-right: 10px;
 }

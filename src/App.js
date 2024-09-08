@@ -519,7 +519,7 @@ const App = () => {
       <h1>Production Report</h1>
 
       <div className="date-container">
-        <label>Select Date: </label>
+        <label className="select-data-label">Select Date: </label>
         <input type="date" value={selectedDate} onChange={handleDateChange} />
       </div>
 
