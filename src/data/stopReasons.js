@@ -1,4 +1,4 @@
-const stopReasons = [
+const reasons = [
   { id: 1, description: "Przezbrojenie (zmiana palety)" },
   { id: 2, description: "Czyszczenie głowic (Planowane 2/zm)" },
   { id: 3, description: "Kalibracja palety (problem z wysokoscia)" },
@@ -25,5 +25,10 @@ const stopReasons = [
   { id: 24, description: "Prezbrojenie (zmiana temperatury pieca)" },
   { id: 25, description: "Brak poprzedniej zmiany" },
 ];
+
+const stopReasons = reasons.map((reason) => ({
+  id: reason.id,
+  description: `${reason.id}.${reason.description}`,
+}));
 
 export default stopReasons;

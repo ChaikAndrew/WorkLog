@@ -1,5 +1,6 @@
 td {
-  text-align: center;
+  text-align: left;
+  padding-left: 10px;
 }
 
 .shiftTotals {
@@ -29,12 +30,12 @@ td {
 // }
 
 .shiftTable thead th {
-  padding: 10px 10px;
+  padding: 5px 10px;
   text-align: left;
 }
 
 .shiftTable tbody td {
-  padding: 10px 10px;
+  padding: 5px 10px;
   border-top: 1px solid #ddd;
   background-color: #ffffff;
   transition: background-color 0.3s;
@@ -49,7 +50,7 @@ td {
 // }
 
 .shiftTable tfoot td {
-  text-align: center;
+  text-align: left;
   padding: 5px 10px;
 }
 

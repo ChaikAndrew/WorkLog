@@ -32,7 +32,7 @@ const App = () => {
   const notyf = new Notyf({
     position: {
       x: "right",
-      y: "top",
+      y: "bottom",
     },
   });
 
@@ -50,26 +50,29 @@ const App = () => {
 
   const handleDelete = (index) => {
     Swal.fire({
-      title: "Are you sure?",
+      title: ` ${operator}, Are you sure?`,
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "No, cancel!",
+      customClass: {
+        confirmButton: "swal-confirm-btn", // Клас для кнопки підтвердження
+        cancelButton: "swal-cancel-btn", // Клас для кнопки скасування
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteRow(index); // Deleting the row
         deleteRow(index); // Видаляємо рядок
 
         // Показуємо повідомлення через Notyf про успішне видалення
         notyf.open({
           message: "The row has been successfully deleted.",
           duration: 2000,
-          className: "custom-gradient-success",
+          className: "custom-gradient-error",
         });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         notyf.open({
-          message: "The row has been successfully deleted.",
+          message: "The deletion was canceled.",
           duration: 2000,
-          className: "custom-gradient-success",
+          className: "custom-gradient-success", // Змінено повідомлення про скасування
         });
       }
     });
@@ -80,9 +83,9 @@ const App = () => {
 
   // Shift start times
   const shiftStartTimes = {
-    "1st Shift (6:00-14:00)": "06:00",
-    "2nd Shift (14:00-22:00)": "14:00",
-    "3rd Shift (22:00-6:00)": "22:00",
+    "1 Shift (6:00-14:00)": "06:00",
+    "2 Shift (14:00-22:00)": "14:00",
+    "3 Shift (22:00-6:00)": "22:00",
   };
 
   // Зберігаємо дані в Local Storage кожного разу, коли `tables` змінюється
@@ -279,7 +282,7 @@ const App = () => {
     // Показуємо повідомлення про успішне додавання
 
     notyf.open({
-      message: "Row has been successfully added to the table.",
+      message: `${operator}, Row has been successfully added to the table.`,
       duration: 2000,
       className: "custom-gradient-success",
     });
@@ -476,7 +479,7 @@ const App = () => {
   const filteredTable = (tables[operator] || []).filter((row) => {
     return (
       row.date === selectedDate ||
-      (row.shift === "3rd Shift (22:00-6:00)" &&
+      (row.shift === "3 Shift (22:00-6:00)" &&
         adjustDateForShift(row.date, row.startTime) === selectedDate)
     );
   });
@@ -484,22 +487,22 @@ const App = () => {
   const operatorTotals = calculateTotalsForData(filteredTable, selectedDate);
 
   const firstShiftTotals = calculateShiftTotals(
-    "1st Shift (6:00-14:00)",
+    "1 Shift (6:00-14:00)",
     selectedDate
   );
   const secondShiftTotals = calculateShiftTotals(
-    "2nd Shift (14:00-22:00)",
+    "2 Shift (14:00-22:00)",
     selectedDate
   );
   const thirdShiftTotals = calculateShiftTotals(
-    "3rd Shift (22:00-6:00)",
+    "3 Shift (22:00-6:00)",
     selectedDate
   );
 
   const shiftsData = [
-    { name: "1st Shift (6:00-14:00)", totals: firstShiftTotals },
-    { name: "2nd Shift (14:00-22:00)", totals: secondShiftTotals },
-    { name: "3rd Shift (22:00-06:00)", totals: thirdShiftTotals },
+    { name: "1 Shift (6:00-14:00)", totals: firstShiftTotals },
+    { name: "2 Shift (14:00-22:00)", totals: secondShiftTotals },
+    { name: "3 Shift (22:00-06:00)", totals: thirdShiftTotals },
   ];
 
   const handleShiftSelect = (index) => {
@@ -610,13 +613,15 @@ const App = () => {
                 <th className="table-shift">Shift</th>
                 <th className="table-machine">Machine</th>
                 <th className="table-operator">Operator</th>
+                <th className="table-task">Task</th>
                 <th className="table-product">Product</th>
                 <th className="table-color">Color</th>
-                <th className="table-task">Task</th>
+
                 <th className="table-quantity">Quantity</th>
-                <th className="table-stop_reason">Stop Reason</th>
+
                 <th className="table-start_time">Start Time</th>
                 <th className="table-end_time">End Time</th>
+                <th className="table-stop_reason">Stop Reason</th>
                 <th className="table-working_time">Working Time</th>
                 <th className="table-downtime">Downtime</th>
 
@@ -635,8 +640,6 @@ const App = () => {
                       <td>{row.shift.split(" ")[0]}</td>
                       <td>{row.machine}</td>
                       <td>{row.operator}</td>
-                      <td>{row.product}</td>
-                      <td>{row.color}</td>
                       <td>
                         <span className={`status ${row.task.toLowerCase()}`}>
                           {row.task === "ZLECENIE"
@@ -644,10 +647,20 @@ const App = () => {
                             : row.task}
                         </span>
                       </td>
+                      <td>{row.product}</td>
+                      <td>{row.color}</td>
+
                       <td>{row.quantity}</td>
-                      <td>{row.stopReason}</td>
+
                       <td>{row.startTime}</td>
                       <td>{row.endTime}</td>
+                      <td>
+                        {
+                          stopReasons.find(
+                            (reason) => reason.description === row.stopReason
+                          )?.id
+                        }
+                      </td>
                       <td>{row.workingTime}</td>
                       <td>{row.downtime}</td>
                       <td>
@@ -686,6 +699,20 @@ const App = () => {
                       <td>{row.operator}</td>
                       <td>
                         <select
+                          name="task"
+                          value={row.task}
+                          onChange={(event) => handleInputChange(index, event)}
+                        >
+                          <option value="">Select</option>
+                          {tasks.map((task, idx) => (
+                            <option key={idx} value={task}>
+                              {task}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <select
                           name="product"
                           value={row.product}
                           onChange={(event) => handleInputChange(index, event)}
@@ -712,25 +739,29 @@ const App = () => {
                           ))}
                         </select>
                       </td>
-                      <td>
-                        <select
-                          name="task"
-                          value={row.task}
-                          onChange={(event) => handleInputChange(index, event)}
-                        >
-                          <option value="">Select</option>
-                          {tasks.map((task, idx) => (
-                            <option key={idx} value={task}>
-                              {task}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
+
                       <td>
                         <input
                           type="number"
                           name="quantity"
                           value={row.quantity}
+                          onChange={(event) => handleInputChange(index, event)}
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          type="time"
+                          name="startTime"
+                          value={row.startTime}
+                          onChange={(event) => handleInputChange(index, event)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="time"
+                          name="endTime"
+                          value={row.endTime}
                           onChange={(event) => handleInputChange(index, event)}
                         />
                       </td>
@@ -748,22 +779,6 @@ const App = () => {
                           ))}
                         </select>
                       </td>
-                      <td>
-                        <input
-                          type="time"
-                          name="startTime"
-                          value={row.startTime}
-                          onChange={(event) => handleInputChange(index, event)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="time"
-                          name="endTime"
-                          value={row.endTime}
-                          onChange={(event) => handleInputChange(index, event)}
-                        />
-                      </td>
                       <td>{row.workingTime}</td>
                       <td>{row.downtime}</td>
                       <td>
@@ -776,7 +791,7 @@ const App = () => {
                           </button>
                           <button
                             className="edit-btn-delete"
-                            onClick={() => deleteRow(index)}
+                            onClick={() => handleDelete(index)} // Викликаємо handleDelete при натисканні
                           >
                             <RiDeleteBin2Line
                               className="delete-icon"
@@ -791,7 +806,15 @@ const App = () => {
               ))}
 
               <tr>
-                <td colSpan="7">Totals:</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colSpan="1" className="totals-cell">
+                  Total:
+                </td>
                 <td>
                   <span className="totals">
                     {operatorTotals.totalTShirts +
@@ -810,6 +833,9 @@ const App = () => {
                 <td></td>
               </tr>
               <tr className="total-statistics">
+                <td colSpan="1" className="totals-cell">
+                  Total:
+                </td>
                 <td colSpan="5">
                   <span className="total-pod">
                     POD: {operatorTotals.totalPOD}
@@ -821,7 +847,7 @@ const App = () => {
                     ZLECENIE: {operatorTotals.totalZlecenie}
                   </span>
                 </td>
-                <td colSpan="6">
+                <td colSpan="5">
                   {operatorTotals.totalTShirts > 0 && (
                     <span className="total-operator-statistic">
                       T-shirts: {operatorTotals.totalTShirts}
@@ -871,7 +897,7 @@ const App = () => {
           </table>
 
           <button className="add-row" onClick={addRow}>
-            <IoMdAddCircle size={40} />
+            <IoMdAddCircle size={50} />
           </button>
         </div>
       )}

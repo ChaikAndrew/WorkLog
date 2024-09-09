@@ -1,3 +1,3 @@
-const operators = ["ANDRII", "KARINA", "INNA", "ANGELINA", "MARINA", "VITALII"];
+const operators = ["Andrii", "Karina", "Inna", "Angelina", "Marina", "Vitalii"];
 
 export default operators;

@@ -18,7 +18,7 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
           <tr>
             <th>Machine</th>
             <th>Operator</th>
-            <th>Total Produced</th>
+            <th>Total</th>
             <th>POD</th>
             <th>POF</th>
             <th>Zlecenie</th>
@@ -65,8 +65,8 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="2">
-              <strong>Total Produced (Shift)</strong>
+            <td colSpan="2" className="totals-cell">
+              Total:
             </td>
             <td className={s.totals}>{totalProduced}</td>
             <td className={s.totalPod}>{shiftTotals.totalPOD}</td>

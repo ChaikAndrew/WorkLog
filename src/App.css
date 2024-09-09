@@ -25,7 +25,7 @@ body {
 
   border-radius: 10px;
 
-  margin: 20px auto;
+  margin: 5px auto;
   background-color: white;
 }
 
@@ -44,9 +44,9 @@ table {
   border-radius: 5px;
   overflow: hidden;
 
-  -webkit-box-shadow: 7px 7px 18px -5px rgba(66, 68, 90, 1);
-  -moz-box-shadow: 7px 7px 18px -5px rgba(66, 68, 90, 1);
-  box-shadow: 7px 7px 18px -5px rgba(66, 68, 90, 1);
+  -webkit-box-shadow: 7px 7px 7px -7px rgba(66, 68, 90, 1);
+  -moz-box-shadow: 7px 7px 7px -7px rgba(66, 68, 90, 1);
+  box-shadow: 7px 7px 7px -7px rgba(66, 68, 90, 1);
 }
 
 thead th {
@@ -64,12 +64,12 @@ tbody tr:not(:last-child) {
 
 button {
   background-color: #33372c;
+  /* margin: 5px; */
   border: none;
   color: #fff;
-  padding: 8px 12px;
+  padding: 8px 8px;
   text-align: center;
   font-size: 14px;
-  margin: 4px 2px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
@@ -154,7 +154,6 @@ input[type="time"] {
 .top-selectors_list {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
 }
 
 /* .shift-totals {
@@ -210,8 +209,8 @@ input[type="time"] {
 }
 
 .date-shift-info {
-  margin: 20px;
-  padding: 5px;
+  margin-top: 10px;
+
   width: 98%;
 
   border-radius: 15px;
@@ -242,16 +241,12 @@ input[type="time"] {
 }
 
 .add-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   color: #ff885b;
   width: 120px;
-  height: 80px;
+  height: 120px;
   background-color: transparent;
   margin-top: 20px;
-
+  border-radius: 50px;
   /* Додаємо фіксовану позицію */
   position: fixed;
   bottom: 0;
@@ -267,6 +262,7 @@ input[type="time"] {
 .add-row:focus {
   cursor: pointer;
   transform: scale(1.6); /* Збільшення при ховері */
+  color: #ff6d38;
 }
 
 .add-row:active {
@@ -313,37 +309,54 @@ input[type="time"] {
 .edit-btn-save:not(:hover):not(:active) {
   transform: scale(1);
 }
-.edit-btn-save {
-  color: #557c56;
-}
+/* .edit-btn-save {
+  color: #33372c;
+  transition: transform 0.3s ease;
+  transform: scale(1); 
+} */
 
-.edit-icon {
-  color: #557c56; /* колір іконки */
-  background-color: transparent; /* фон іконки або елементу */
+.edit-icon,
+.edit,
+.edit-btn-save {
+  color: #33372c; /* колір іконки */
   transition: transform 0.3s ease;
   transform: scale(1); /* Початковий стан */
+}
+
+.edit-icon:hover,
+.edit-icon:focus,
+.edit-btn-save :hover,
+.edit-btn-save :focus,
+.edit:hover,
+.edit:focus {
+  color: #557c56;
 }
 
 .delete-icon {
   color: #ff885b; /* колір іконки */
-  background-color: transparent; /* фон іконки або елементу */
+
   transition: transform 0.3s ease;
   transform: scale(1); /* Початковий стан */
+}
+
+.delete-icon:hover,
+.delete-icon:focus {
+  color: #962a2a;
 }
 
 .custom-gradient-success {
   text-align: center;
 
-  background: #00b4db; /* fallback for old browsers */
+  background: #138b17; /* fallback for old browsers */
   background: -webkit-linear-gradient(
     to right,
-    #005672,
-    #005672
+    #3a543b,
+    #16110f
   ); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(
     to right,
-    #005672,
-    #005672
+    #3a543b,
+    #16110f
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
@@ -354,15 +367,40 @@ input[type="time"] {
   background: -webkit-linear-gradient(
     to right,
     #962a2a,
-    #962a2a
+    #16110f
   ); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(
     to right,
     #962a2a,
-    #962a2a
+    #16110f
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .select-data-label {
   margin-right: 10px;
+}
+
+.totals-cell {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Стилізація кнопки підтвердження */
+.swal-confirm-btn {
+  background-color: #962a2a; /* Червоний */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+/* Стилізація кнопки скасування */
+.swal-cancel-btn {
+  background-color: #33372c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 5px;
 }
