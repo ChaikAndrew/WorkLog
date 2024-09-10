@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
-
 import shifts from "./data/shifts";
 import machines from "./data/machines";
 import operators from "./data/operators";
@@ -9,6 +8,9 @@ import colors from "./data/colors";
 import tasks from "./data/tasks";
 import stopReasons from "./data/stopReasons";
 import ShiftStatisticsTable from "./components/ShiftStatisticsTable";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin2Line } from "react-icons/ri";
@@ -27,7 +29,7 @@ const App = () => {
   const [showZlecenieModal, setShowZlecenieModal] = useState(false);
   const [zlecenieNameInput, setZlecenieNameInput] = useState("");
   const [zlecenieIndex, setZlecenieIndex] = useState(null);
-
+  const [selectedDate, setSelectedDate] = useState(null); // Це твоє поле для дати
   const lastRowRef = useRef(null);
   const notyf = new Notyf({
     position: {
@@ -78,7 +80,6 @@ const App = () => {
     });
   };
 
-  const [selectedDate, setSelectedDate] = useState("");
   const [showShiftStats, setShowShiftStats] = useState(false);
 
   // Shift start times
@@ -105,10 +106,13 @@ const App = () => {
     setSelectedMachine(event.target.value);
   };
 
-  const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
+  // const handleDateChange = (event) => {
+  //   setSelectedDate(event.target.value);
+  // };
+  const handleDateChange = (date) => {
+    const formattedDate = date ? date.toISOString().split("T")[0] : null;
+    setSelectedDate(formattedDate);
   };
-
   const formatTimeTo24Hour = (time) => {
     const [hours, minutes] = time.split(":").map(Number);
 
@@ -521,10 +525,17 @@ const App = () => {
     <div className="table-container">
       <h1>Production Report</h1>
 
-      <div className="date-container">
+      {/* <div className="date-container">
         <label className="select-data-label">Select Date: </label>
         <input type="date" value={selectedDate} onChange={handleDateChange} />
-      </div>
+      </div> */}
+      <DatePicker
+        selected={selectedDate ? new Date(selectedDate) : null}
+        onChange={handleDateChange}
+        dateFormat="yyyy-MM-dd"
+        className="custom-datepicker"
+        placeholderText="Select a date"
+      />
 
       <button onClick={toggleShiftStatsVisibility}>
         {showShiftStats ? "Hide" : "Show"} Statistics
