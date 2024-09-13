@@ -81,11 +81,11 @@ export const calculateTotalsForData = (
 
 // Функція для обчислення підсумків зміни
 export const calculateShiftTotals = (
-  shift, // Обрана зміна
-  selectedDate, // Обрана дата
-  tables, // Таблиці з даними операторів
-  operators, // Список операторів
-  adjustDateForShift // Функція для коригування дати у нічних змінах
+  shift,
+  selectedDate,
+  tables,
+  operators,
+  adjustDateForShift
 ) => {
   let shiftTotals = {
     totalPOD: 0,
@@ -99,12 +99,10 @@ export const calculateShiftTotals = (
     totalTest: 0,
     totalWhite: 0,
     totalColor: 0,
-    machinesStats: {}, // Статистика по кожній машині
+    machinesStats: {},
   };
 
-  // Перебір кожного оператора
   operators.forEach((op) => {
-    // Фільтруємо дані для оператора, щоб вибрати лише ті, що належать обраній даті та зміні
     const filteredData = (tables[op] || []).filter(
       (row) =>
         (row.date === selectedDate ||
@@ -113,11 +111,10 @@ export const calculateShiftTotals = (
         row.shift === shift
     );
 
-    // Перебір кожного рядка з відфільтрованих даних
     filteredData.forEach((row) => {
       const machine = row.machine;
 
-      // Ініціалізація даних для кожної машини
+      // Ініціалізуємо машину, якщо її немає в статистиці
       if (!shiftTotals.machinesStats[machine]) {
         shiftTotals.machinesStats[machine] = {
           totalPOD: 0,
@@ -131,52 +128,60 @@ export const calculateShiftTotals = (
           totalTest: 0,
           totalWorkingTime: 0,
           totalDowntime: 0,
-          operator: op, // Запам'ятовуємо оператора, що працює на цій машині
+          operators: [], // Масив операторів для машини
         };
       }
 
-      // Підсумовуємо дані для машини
-      const machineStats = shiftTotals.machinesStats[machine];
+      // Перевіряємо, чи вже є цей оператор у масиві операторів
+      const existingOperator = shiftTotals.machinesStats[
+        machine
+      ].operators.find((o) => o.name === op);
+
+      if (!existingOperator) {
+        shiftTotals.machinesStats[machine].operators.push({
+          name: op,
+          totalPOD: 0,
+          totalPOF: 0,
+          totalZlecenie: 0,
+          totalTShirts: 0,
+          totalHoodies: 0,
+          totalBags: 0,
+          totalSleeves: 0,
+          totalOthers: 0,
+          totalTest: 0,
+          totalWorkingTime: 0,
+          totalDowntime: 0,
+        });
+      }
+
+      const operatorStats = shiftTotals.machinesStats[machine].operators.find(
+        (o) => o.name === op
+      );
+
       const quantity = parseInt(row.quantity) || 0;
+      if (row.task === "POD") operatorStats.totalPOD += quantity;
+      if (row.task === "POF") operatorStats.totalPOF += quantity;
+      if (row.task === "ZLECENIE") operatorStats.totalZlecenie += quantity;
 
-      if (row.task === "POD") machineStats.totalPOD += quantity;
-      if (row.task === "POF") machineStats.totalPOF += quantity;
-      if (row.task === "ZLECENIE") machineStats.totalZlecenie += quantity;
+      if (row.product === "T-shirts") operatorStats.totalTShirts += quantity;
+      if (row.product === "Hoodie") operatorStats.totalHoodies += quantity;
+      if (row.product === "Bags") operatorStats.totalBags += quantity;
+      if (row.product === "Sleeves") operatorStats.totalSleeves += quantity;
+      if (row.product === "Others") operatorStats.totalOthers += quantity;
+      if (row.product === "Test") operatorStats.totalTest += quantity;
 
-      if (row.product === "T-shirts") machineStats.totalTShirts += quantity;
-      if (row.product === "Hoodie") machineStats.totalHoodies += quantity;
-      if (row.product === "Bags") machineStats.totalBags += quantity;
-      if (row.product === "Sleeves") machineStats.totalSleeves += quantity;
-      if (row.product === "Others") machineStats.totalOthers += quantity;
-      if (row.product === "Test") machineStats.totalTest += quantity;
-
-      // Обчислення робочого часу
+      // Обчислюємо робочий і downtime
       const [workingHours, workingMinutes] = row.workingTime
         ? row.workingTime.split("h ").map((s) => parseInt(s) || 0)
         : [0, 0];
-      machineStats.totalWorkingTime += workingHours * 60 + workingMinutes;
+      operatorStats.totalWorkingTime += workingHours * 60 + workingMinutes;
 
-      // Обчислення часу простою (downtime)
       const [downtimeHours, downtimeMinutes] = row.downtime
         ? row.downtime.split("h ").map((s) => parseInt(s) || 0)
         : [0, 0];
-      machineStats.totalDowntime += downtimeHours * 60 + downtimeMinutes;
+      operatorStats.totalDowntime += downtimeHours * 60 + downtimeMinutes;
     });
-
-    // Обчислюємо підсумки для оператора
-    const opTotals = calculateTotalsForData(filteredData, selectedDate);
-    shiftTotals.totalPOD += opTotals.totalPOD;
-    shiftTotals.totalPOF += opTotals.totalPOF;
-    shiftTotals.totalZlecenie += opTotals.totalZlecenie;
-    shiftTotals.totalTShirts += opTotals.totalTShirts;
-    shiftTotals.totalHoodies += opTotals.totalHoodies;
-    shiftTotals.totalBags += opTotals.totalBags;
-    shiftTotals.totalSleeves += opTotals.totalSleeves;
-    shiftTotals.totalOthers += opTotals.totalOthers;
-    shiftTotals.totalTest += opTotals.totalTest;
-    shiftTotals.totalWhite += opTotals.totalWhite;
-    shiftTotals.totalColor += opTotals.totalColor;
   });
 
-  return shiftTotals; // Повертаємо підсумки для зміни
+  return shiftTotals;
 };

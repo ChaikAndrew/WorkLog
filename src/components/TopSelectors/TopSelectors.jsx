@@ -12,23 +12,25 @@ const TopSelectors = ({
   handleMachineChange,
 }) => {
   return (
-    <ul className="top-selectors_list">
-      <li>
-        <ShiftSelector shift={shift} handleShiftChange={handleShiftChange} />
-      </li>
-      <li>
-        <OperatorSelector
-          operator={operator}
-          handleOperatorChange={handleOperatorChange}
-        />
-      </li>
-      <li>
-        <MachineSelector
-          selectedMachine={selectedMachine}
-          handleMachineChange={handleMachineChange}
-        />
-      </li>
-    </ul>
+    <div className="top-selectors">
+      <ul className="top-selectors_list">
+        <li>
+          <ShiftSelector shift={shift} handleShiftChange={handleShiftChange} />
+        </li>
+        <li>
+          <OperatorSelector
+            operator={operator}
+            handleOperatorChange={handleOperatorChange}
+          />
+        </li>
+        <li>
+          <MachineSelector
+            selectedMachine={selectedMachine}
+            handleMachineChange={handleMachineChange}
+          />
+        </li>
+      </ul>
+    </div>
   );
 };
 
