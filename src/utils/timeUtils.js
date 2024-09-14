@@ -39,6 +39,14 @@ export const calculateDowntime = (startTime, endTime) => {
 
   // Обчислюємо різницю в хвилинах
   const diff = (end - start) / 1000 / 60; // Різниця у хвилинах
+
+  // // Додаємо перевірку, щоб переконатися, що різниця не більше 24 годин
+  // if (diff > 1440) {
+  //   // більше ніж 24 години
+  //   console.error("Something went wrong, downtime exceeds 24 hours.");
+  //   return "0h 0m"; // Скидаємо значення, якщо час некоректний
+  // }
+
   const hours = Math.floor(diff / 60); // Виділяємо години
   const minutes = diff % 60; // Виділяємо хвилини
 
@@ -58,4 +66,29 @@ export const adjustDateForShift = (date, startTime) => {
   const newDay = String(dateObj.getUTCDate()).padStart(2, "0"); // Форматуємо день
 
   return `${newYear}-${newMonth}-${newDay}`; // Повертаємо відкориговану дату у форматі "РРРР-ММ-ДД"
+};
+
+// Функція для розрахунку downtime між операторами
+export const calculateDowntimeBetweenOperators = (
+  prevEndTime,
+  currentStartTime,
+  shiftStartTime
+) => {
+  let downtime;
+
+  // Перевіряємо, чи є попередній оператор і час початку поточного оператора
+  if (prevEndTime && currentStartTime) {
+    console.log(
+      "Calculating downtime between previous endTime and current startTime..."
+    );
+    downtime = calculateDowntime(prevEndTime, currentStartTime);
+  } else if (!prevEndTime && currentStartTime) {
+    console.log("Calculating downtime from shift start time...");
+    downtime = calculateDowntime(shiftStartTime, currentStartTime);
+  } else {
+    downtime = "0h 0m";
+  }
+
+  console.log("Final calculated downtime:", downtime);
+  return downtime;
 };

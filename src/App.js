@@ -8,11 +8,10 @@ import ZlecenieModal from "./components/ZlecenieModal/ZlecenieModal";
 import TopSelectors from "./components/TopSelectors/TopSelectors";
 import ToggleStatisticsButton from "./components/ToggleStatisticsButton/ToggleStatisticsButton";
 import ShiftStatisticsSection from "./components/ShiftStatisticsSection/ShiftStatisticsSection";
-
+import { calculateDowntimeBetweenOperators } from "./utils/timeUtils";
 import {
   formatTimeTo24Hour,
   calculateWorkingTime,
-  calculateDowntime,
   adjustDateForShift,
 } from "./utils/timeUtils";
 
@@ -56,6 +55,29 @@ const App = () => {
     saveTablesToLocalStorage(tables);
   }, [tables]);
 
+  // Функція для пошуку prevEndTime з іншої таблиці
+  const findPreviousEndTime = (machine, currentTable, currentIndex) => {
+    let prevEndTime = null;
+
+    // Перебираємо всі таблиці
+    Object.keys(tables).forEach((operatorName) => {
+      const operatorTable = tables[operatorName];
+
+      // Шукаємо попередні записи у цій таблиці для цієї машини
+      operatorTable.forEach((row, index) => {
+        if (
+          row.machine === machine && // Та сама машина
+          row.endTime && // Має endTime
+          (currentTable !== operatorTable || index < currentIndex) // Не в тій же таблиці або попередній рядок
+        ) {
+          prevEndTime = row.endTime;
+        }
+      });
+    });
+
+    return prevEndTime;
+  };
+
   const handleOperatorChange = (event) => {
     setOperator(event.target.value);
   };
@@ -94,24 +116,58 @@ const App = () => {
     setShowZlecenieModal(false);
     setZlecenieNameInput("");
   };
-
+  //1
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
+    console.log(
+      `Handling input change for index: ${index}, field: ${name}, value: ${value}`
+    );
+
     const updatedTable = [...tables[operator]];
+    console.log("Initial updatedTable:", updatedTable);
+
     updatedTable[index][name] = value;
 
     if (name === "task" && value === "ZLECENIE") {
       setShowZlecenieModal(true);
       setZlecenieIndex(index);
+      console.log("Opening Zlecenie Modal for index:", index);
     } else {
       updatedTable[index][name] = value;
       setTables({ ...tables, [operator]: updatedTable });
+      console.log("Updated tables after setting value:", updatedTable);
     }
 
     if (name === "startTime") {
       const shiftStartTime = shiftStartTimes[shift];
-      if (value && shiftStartTime && value > shiftStartTime) {
-        const downtime = calculateDowntime(shiftStartTime, value);
+      let prevEndTime = index > 0 ? updatedTable[index - 1].endTime : null;
+
+      if (!prevEndTime) {
+        // Якщо попереднього endTime немає в тій же таблиці, шукаємо в інших
+        prevEndTime = findPreviousEndTime(
+          updatedTable[index].machine,
+          updatedTable,
+          index
+        );
+      }
+
+      if (prevEndTime) {
+        console.log(`Prev End Time found: ${prevEndTime}`);
+      } else {
+        console.log("No previous endTime available, setting to null.");
+      }
+
+      console.log("Prev End Time:", prevEndTime);
+      console.log("Current Start Time:", value);
+      console.log("Shift Start Time:", shiftStartTime);
+
+      if (value && shiftStartTime) {
+        const downtime = calculateDowntimeBetweenOperators(
+          prevEndTime,
+          value,
+          shiftStartTime
+        );
+        console.log("Downtime calculated:", downtime);
         updatedTable[index].downtime = downtime;
         updatedTable[index].stopReason = "";
       } else {
@@ -122,36 +178,259 @@ const App = () => {
 
     if (name === "startTime" || name === "endTime") {
       const formattedTime = formatTimeTo24Hour(value);
+      console.log("Formatted time:", formattedTime);
+
       updatedTable[index][name] = formattedTime;
 
       const startTime = updatedTable[index].startTime;
       const endTime = updatedTable[index].endTime;
 
-      if (startTime && endTime) {
-        const workingTime = calculateWorkingTime(startTime, endTime);
-        updatedTable[index].workingTime = workingTime;
-      }
-    }
+      console.log("Updated startTime:", startTime);
+      console.log("Updated endTime:", endTime);
 
-    if (name === "endTime" && index < updatedTable.length - 1) {
-      const nextStartTime = updatedTable[index + 1].startTime;
-      if (value && nextStartTime) {
-        const downtime = calculateDowntime(value, nextStartTime);
-        updatedTable[index + 1].downtime = downtime;
+      // Перевіряємо на наявність обох полів перед обчисленням робочого часу
+      if (!startTime || !endTime) {
+        console.log(
+          "Start time or end time is missing, cannot calculate working time"
+        );
+        return;
       }
-    }
 
-    if (name === "startTime" && index > 0) {
-      const prevEndTime = updatedTable[index - 1].endTime;
-      if (value && prevEndTime) {
-        const downtime = calculateDowntime(prevEndTime, value);
-        updatedTable[index].downtime = downtime;
-      }
+      const workingTime = calculateWorkingTime(startTime, endTime);
+      console.log("Working time calculated:", workingTime);
+      updatedTable[index].workingTime = workingTime;
     }
 
     const updatedTables = { ...tables, [operator]: updatedTable };
+    console.log("Final updatedTables:", updatedTables);
     setTables(updatedTables);
   };
+
+  // 2;
+  // const handleInputChange = (index, event) => {
+  //   const { name, value } = event.target;
+  //   console.log(
+  //     `Handling input change for index: ${index}, field: ${name}, value: ${value}`
+  //   );
+
+  //   const updatedTable = [...tables[operator]];
+  //   console.log("Initial updatedTable:", updatedTable);
+
+  //   updatedTable[index][name] = value;
+
+  //   if (name === "task" && value === "ZLECENIE") {
+  //     setShowZlecenieModal(true);
+  //     setZlecenieIndex(index);
+  //     console.log("Opening Zlecenie Modal for index:", index);
+  //   } else {
+  //     updatedTable[index][name] = value;
+  //     setTables({ ...tables, [operator]: updatedTable });
+  //     console.log("Updated tables after setting value:", updatedTable);
+  //   }
+
+  //   // Логіка для пошуку попереднього `endTime` в межах тієї ж зміни
+  //   if (name === "startTime") {
+  //     const shiftStartTime = shiftStartTimes[shift];
+
+  //     // Обчислюємо кінець зміни для нічної зміни або наступної
+  //     const shiftEndTime =
+  //       shift === "3 Shift (22:00-6:00)"
+  //         ? "06:00"
+  //         : shiftStartTimes[
+  //             Object.keys(shiftStartTimes)[
+  //               (Object.keys(shiftStartTimes).indexOf(shift) + 1) % 3
+  //             ]
+  //           ];
+
+  //     let prevEndTime = index > 0 ? updatedTable[index - 1].endTime : null;
+
+  //     if (!prevEndTime) {
+  //       // Якщо попереднього `endTime` немає в поточній таблиці, шукаємо в інших таблицях в межах тієї ж зміни
+  //       prevEndTime = findPreviousEndTime(
+  //         updatedTable[index].machine,
+  //         updatedTable,
+  //         index,
+  //         shiftStartTime,
+  //         shiftEndTime
+  //       );
+  //     }
+
+  //     // Перевіряємо, чи попередній `endTime` знаходиться в межах поточної зміни
+  //     if (
+  //       prevEndTime &&
+  //       (prevEndTime < shiftStartTime || prevEndTime > shiftEndTime)
+  //     ) {
+  //       console.log(
+  //         `Prev End Time (${prevEndTime}) is outside the current shift, resetting to null.`
+  //       );
+  //       prevEndTime = null; // Якщо поза зміною, скидаємо
+  //     }
+
+  //     if (!prevEndTime) {
+  //       prevEndTime = shiftStartTime; // Якщо немає попереднього оператора, використовуємо початок зміни
+  //       console.log("Using shift start time as previous endTime.");
+  //     }
+
+  //     console.log("Prev End Time:", prevEndTime);
+  //     console.log("Current Start Time:", value);
+  //     console.log("Shift Start Time:", shiftStartTime);
+
+  //     if (value && shiftStartTime) {
+  //       const downtime = calculateDowntimeBetweenOperators(
+  //         prevEndTime,
+  //         value,
+  //         shiftStartTime
+  //       );
+  //       console.log("Downtime calculated:", downtime);
+  //       updatedTable[index].downtime = downtime;
+  //       updatedTable[index].stopReason = "";
+  //     } else {
+  //       updatedTable[index].downtime = "0h 0m";
+  //       updatedTable[index].stopReason = "";
+  //     }
+  //   }
+
+  //   if (name === "startTime" || name === "endTime") {
+  //     const formattedTime = formatTimeTo24Hour(value);
+  //     console.log("Formatted time:", formattedTime);
+
+  //     updatedTable[index][name] = formattedTime;
+
+  //     const startTime = updatedTable[index].startTime;
+  //     const endTime = updatedTable[index].endTime;
+
+  //     console.log("Updated startTime:", startTime);
+  //     console.log("Updated endTime:", endTime);
+
+  //     // Перевіряємо на наявність обох полів перед обчисленням робочого часу
+  //     if (!startTime || !endTime) {
+  //       console.log(
+  //         "Start time or end time is missing, cannot calculate working time"
+  //       );
+  //       return;
+  //     }
+
+  //     const workingTime = calculateWorkingTime(startTime, endTime);
+  //     console.log("Working time calculated:", workingTime);
+  //     updatedTable[index].workingTime = workingTime;
+  //   }
+
+  //   const updatedTables = { ...tables, [operator]: updatedTable };
+  //   console.log("Final updatedTables:", updatedTables);
+  //   setTables(updatedTables);
+  // };
+  // const handleInputChange = (index, event) => {
+  //   const { name, value } = event.target;
+  //   console.log(
+  //     `Handling input change for index: ${index}, field: ${name}, value: ${value}`
+  //   );
+
+  //   const updatedTable = [...tables[operator]];
+  //   console.log("Initial updatedTable:", updatedTable);
+
+  //   updatedTable[index][name] = value;
+
+  //   if (name === "task" && value === "ZLECENIE") {
+  //     setShowZlecenieModal(true);
+  //     setZlecenieIndex(index);
+  //     console.log("Opening Zlecenie Modal for index:", index);
+  //   } else {
+  //     updatedTable[index][name] = value;
+  //     setTables({ ...tables, [operator]: updatedTable });
+  //     console.log("Updated tables after setting value:", updatedTable);
+  //   }
+
+  //   // Логіка для пошуку попереднього `endTime` в межах тієї ж зміни
+  //   if (name === "startTime") {
+  //     const shiftStartTime = shiftStartTimes[shift];
+
+  //     // Обчислюємо кінець зміни для нічної зміни або наступної
+  //     const shiftEndTime =
+  //       shift === "3 Shift (22:00-6:00)"
+  //         ? "06:00"
+  //         : shiftStartTimes[
+  //             Object.keys(shiftStartTimes)[
+  //               (Object.keys(shiftStartTimes).indexOf(shift) + 1) % 3
+  //             ]
+  //           ];
+
+  //     let prevEndTime = index > 0 ? updatedTable[index - 1].endTime : null;
+
+  //     if (!prevEndTime) {
+  //       // Якщо попереднього `endTime` немає в поточній таблиці, шукаємо в інших таблицях в межах тієї ж зміни
+  //       prevEndTime = findPreviousEndTime(
+  //         updatedTable[index].machine,
+  //         updatedTable,
+  //         index,
+  //         shiftStartTime,
+  //         shiftEndTime
+  //       );
+  //     }
+
+  //     // Перевіряємо, чи попередній `endTime` знаходиться в межах поточної зміни
+  //     if (
+  //       prevEndTime &&
+  //       (prevEndTime < shiftStartTime || prevEndTime > shiftEndTime)
+  //     ) {
+  //       console.log(
+  //         `Prev End Time (${prevEndTime}) is outside the current shift, resetting to null.`
+  //       );
+  //       prevEndTime = null; // Якщо поза зміною, скидаємо
+  //     }
+
+  //     if (!prevEndTime) {
+  //       prevEndTime = shiftStartTime; // Якщо немає попереднього оператора, використовуємо початок зміни
+  //       console.log("Using shift start time as previous endTime.");
+  //     }
+
+  //     console.log("Prev End Time:", prevEndTime);
+  //     console.log("Current Start Time:", value);
+  //     console.log("Shift Start Time:", shiftStartTime);
+
+  //     if (value && shiftStartTime) {
+  //       const downtime = calculateDowntimeBetweenOperators(
+  //         prevEndTime,
+  //         value,
+  //         shiftStartTime
+  //       );
+  //       console.log("Downtime calculated:", downtime);
+  //       updatedTable[index].downtime = downtime;
+  //       updatedTable[index].stopReason = "";
+  //     } else {
+  //       updatedTable[index].downtime = "0h 0m";
+  //       updatedTable[index].stopReason = "";
+  //     }
+  //   }
+
+  //   if (name === "startTime" || name === "endTime") {
+  //     const formattedTime = formatTimeTo24Hour(value);
+  //     console.log("Formatted time:", formattedTime);
+
+  //     updatedTable[index][name] = formattedTime;
+
+  //     const startTime = updatedTable[index].startTime;
+  //     const endTime = updatedTable[index].endTime;
+
+  //     console.log("Updated startTime:", startTime);
+  //     console.log("Updated endTime:", endTime);
+
+  //     // Перевіряємо на наявність обох полів перед обчисленням робочого часу
+  //     if (!startTime || !endTime) {
+  //       console.log(
+  //         "Start time or end time is missing, cannot calculate working time"
+  //       );
+  //       return;
+  //     }
+
+  //     const workingTime = calculateWorkingTime(startTime, endTime);
+  //     console.log("Working time calculated:", workingTime);
+  //     updatedTable[index].workingTime = workingTime;
+  //   }
+
+  //   const updatedTables = { ...tables, [operator]: updatedTable };
+  //   console.log("Final updatedTables:", updatedTables);
+  //   setTables(updatedTables);
+  // };
 
   const handleAddRow = () => {
     const result = addRow(
@@ -175,11 +454,49 @@ const App = () => {
     }, 100);
   };
 
+  const recalculateTimesForTable = (updatedTable) => {
+    updatedTable.forEach((row, index) => {
+      // Оновлюємо попередній час закінчення для кожного ряду
+      let prevEndTime = index > 0 ? updatedTable[index - 1].endTime : null;
+
+      if (!prevEndTime) {
+        prevEndTime = shiftStartTimes[shift]; // Якщо це перший рядок, беремо початок зміни
+      }
+
+      // Якщо це час початку роботи, обчислюємо простій
+      if (row.startTime) {
+        const downtime = calculateDowntimeBetweenOperators(
+          prevEndTime,
+          row.startTime,
+          shiftStartTimes[shift]
+        );
+        row.downtime = downtime;
+      }
+
+      // Якщо це час початку та кінця роботи, обчислюємо робочий час
+      if (row.startTime && row.endTime) {
+        const workingTime = calculateWorkingTime(row.startTime, row.endTime);
+        row.workingTime = workingTime;
+      }
+    });
+
+    // Після перерахунку оновлюємо таблиці
+    setTables((prevTables) => ({
+      ...prevTables,
+      [operator]: updatedTable,
+    }));
+  };
+
   const handleDeleteRow = (index) => {
     showDeleteConfirmation(operator).then((result) => {
       if (result.isConfirmed) {
         const updatedTables = deleteRow(tables, operator, index);
         setTables(updatedTables);
+        console.log("Row deleted, recalculating times...");
+
+        // Перераховуємо час для всіх рядків після видалення
+        recalculateTimesForTable(updatedTables[operator]);
+
         showErrorNotification("The row has been successfully deleted.");
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         showSuccessNotification("The deletion was canceled.");

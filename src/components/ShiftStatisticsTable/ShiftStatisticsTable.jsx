@@ -32,16 +32,13 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
     });
   });
 
-  // Оновимо totalProduced, щоб правильно підсумувати всі значення
   const totalProduced = totalPOD + totalPOF + totalZlecenie;
 
-  // Сортуємо машини по їхньому номеру (наприклад, DTG1, DTG2 і т.д.)
   const sortedMachines = Object.entries(shiftTotals.machinesStats).sort(
     ([a], [b]) => {
-      // Витягуємо номер машини (DTG1 -> 1, DTG2 -> 2)
       const numberA = parseInt(a.replace(/\D/g, ""), 10);
       const numberB = parseInt(b.replace(/\D/g, ""), 10);
-      return numberA - numberB; // Сортуємо по зростанню
+      return numberA - numberB;
     }
   );
 
@@ -70,7 +67,9 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
         </thead>
         <tbody>
           {sortedMachines.map(([machine, stats]) => (
-            <>
+            <React.Fragment key={machine}>
+              {" "}
+              {/* Додаємо унікальний ключ для фрагмента */}
               {stats.operators.map((operator, index) => (
                 <tr key={`${machine}-${operator.name}-${index}`}>
                   {index === 0 && (
@@ -103,7 +102,7 @@ const ShiftStatisticsTable = ({ shiftName, shiftTotals }) => {
                   </td>
                 </tr>
               ))}
-            </>
+            </React.Fragment>
           ))}
         </tbody>
         <tfoot>
